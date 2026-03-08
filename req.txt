@@ -1,0 +1,2 @@
+langchain-huggingface
+sentence-transformers
