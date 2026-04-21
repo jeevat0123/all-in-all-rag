@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from functools import cached_property
 from langchain_huggingface import HuggingFaceEmbeddings
 
@@ -15,10 +15,10 @@ class EmbeddingManager:
         This prevents heavy memory usage during object instantiation.
         """
         try:
-            print(f"Loading model: {self.model_name}")
+            logger.info(f"Loading model: {self.model_name}")
             return HuggingFaceEmbeddings(model_name=self.model_name)
         except Exception as e:
-            print(f"Failed to initialize model {self.model_name}: {e}")
+            logger.exception(f"Failed to initialize model {self.model_name}: {e}")
             raise RuntimeError("Embedding model initialization failed.") from e
 
     def generate_embeddings(self, contents: list[str]) -> list[list[float]]:
@@ -26,7 +26,7 @@ class EmbeddingManager:
         if not contents:
             return []
             
-        print(f"Generating embeddings for {len(contents)} documents")
+        logger.info(f"Generating embeddings for {len(contents)} documents")
         return self.model.embed_documents(contents)
 
 # 1. Initialize (The model is NOT loaded into RAM yet)
@@ -38,5 +38,5 @@ docs = ["Hello world", "How to use LangChain with HuggingFace?"]
 # 3. Generate (The model loads NOW, only on this first call)
 embeddings = manager.generate_embeddings(docs)
 
-print(f"Generated {len(embeddings)} embeddings.")
-print(f"Vector size: {len(embeddings[0])}")
+logger.info(f"Generated {len(embeddings)} embeddings.")
+logger.info(f"Vector size: {len(embeddings[0])}")

@@ -1,4 +1,5 @@
 import os
+from loguru import logger
 from functools import cached_property
 from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -6,10 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import os
-from functools import cached_property
-from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
-from langchain_core.messages import HumanMessage, SystemMessage
 
 class LLMManager:
     """
@@ -19,7 +16,7 @@ class LLMManager:
 
     def __init__(self, repo_id: str = "meta-llama/Llama-3.1-8B-Instruct", token: str = ""):
         """
-        Initializes the manager with a specific model and authentication token.
+        Initializes the manager with a specific model with Hugging face authentication token.
         
         Args:
             repo_id (str): The Hugging Face model repository ID.
@@ -29,14 +26,12 @@ class LLMManager:
         # Fallback logic for authentication: Priority given to passed token, then env var
         self.token = token or os.getenv("HF_TOKEN")
 
-    @cached_property
+    @cached_property # Caches the result of this method after the first call, so subsequent calls return the cached instance
     def chat_model(self) -> ChatHuggingFace:
         """
         Lazily creates and caches the ChatHuggingFace instance.
-        The @cached_property decorator ensures the 'Connecting' logic runs ONLY ONCE,
-        storing the resulting object for all future calls to self.chat_model.
         """
-        print(f"🧠 Connecting to LLM: {self.repo_id}")
+        logger.info(f"🧠 Connecting to LLM: {self.repo_id}")
         
         # Configure the remote inference endpoint
         llm_endpoint = HuggingFaceEndpoint(
@@ -79,20 +74,20 @@ if __name__ == "__main__":
 
     try:
         # Initialize
-        print("--- Initializing LLMManager ---")
+        logger.info("--- Initializing LLMManager ---")
         llm = LLMManager()
 
         # Test Question
-        print("--- Sending Request ---")
+        logger.info("--- Sending Request ---")
         question = "Hai?"
         
         # This will trigger the @cached_property loading log
         answer = llm.ask(question)
 
-        print("\n" + "="*20)
-        print(f"Question: {question}")
-        print(f"Answer: {answer}")
-        print("="*20)
+        logger.info("\n" + "="*20)
+        logger.info(f"Question: {question}")
+        logger.info(f"Answer: {answer}")
+        logger.info("="*20)
 
     except Exception as e:
-        print(f"\n❌ Test Failed: {e}")
+        logger.exception(f"\n❌ Test Failed: {e}")

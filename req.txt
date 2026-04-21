@@ -1,5 +1,7 @@
-langchain-huggingface
 sentence-transformers
+langchain
+langchain-huggingface
 langchain-chroma
-chromadb
+langchain-community
 python-dotenv
+unstructured[all-docs]
