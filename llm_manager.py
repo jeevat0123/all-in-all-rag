@@ -17,7 +17,7 @@ class LLMManager:
     Uses lazy initialization to ensure the API connection is only established when needed.
     """
 
-    def __init__(self, repo_id: str = "meta-llama/Llama-3.1-8B-Instruct", token: str = None):
+    def __init__(self, repo_id: str = "meta-llama/Llama-3.1-8B-Instruct", token: str = ""):
         """
         Initializes the manager with a specific model and authentication token.
         
@@ -40,7 +40,7 @@ class LLMManager:
         
         # Configure the remote inference endpoint
         llm_endpoint = HuggingFaceEndpoint(
-            repo_id=self.repo_id,
+            model=self.repo_id,
             huggingfacehub_api_token=self.token,
             task="chat-completion", # Ensures the provider uses a chat-optimized pipeline
             max_new_tokens=512,     # Limits the length of the generated response
@@ -67,9 +67,10 @@ class LLMManager:
             SystemMessage(content=system_prompt), # Sets the 'personality' or rules
             HumanMessage(content=prompt)         # The actual user input
         ]
-        
         # Invoke the model and extract just the text content from the response object
-        return self.chat_model.invoke(messages).content
+        response = self.chat_model.invoke(messages)
+
+        return str(response.content)
 
 # --- 2. Isolation Test ---
 if __name__ == "__main__":
