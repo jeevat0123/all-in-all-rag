@@ -5,3 +5,5 @@ langchain-chroma
 langchain-community
 python-dotenv
 unstructured[all-docs]
+pydantic
+loguru
