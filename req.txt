@@ -7,3 +7,17 @@ python-dotenv
 unstructured[all-docs]
 pydantic
 loguru
+
+# ui
+nicegui 
+langchain-text-splitters 
+langchain-experimental 
+langchain-huggingface 
+sentence-transformers 
+scikit-learn 
+chromadb 
+langchain-chroma 
+faiss-cpu 
+langchain-community 
+plotly 
+numpy
